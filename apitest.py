@@ -1,3 +1,4 @@
+from os import path
 import requests
 import json
 import time
@@ -99,6 +100,8 @@ def run(input_file_name, output_file_name="api_test_results.xlsx"):
     # Load test cases from the input JSON file
     test_cases = load_test_cases(input_file_name)
 
+    output_file_path = path.join(path.dirname(path.abspath(__file__)),'Results', output_file_name)
+
     # Execute each test case and collect the results in parallel
     from concurrent.futures import ThreadPoolExecutor
 
@@ -106,7 +109,7 @@ def run(input_file_name, output_file_name="api_test_results.xlsx"):
         test_results = list(executor.map(execute_test_case, test_cases))
 
     # Write the collected test results to an Excel file
-    write_results_to_excel(test_results, output_file_name)
+    write_results_to_excel(test_results, output_file_path)
 
 if __name__ == "__main__":
     pass
