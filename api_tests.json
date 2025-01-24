@@ -1,0 +1,27 @@
+{
+    "tests": [
+      {
+        "name": "Test GET User",
+        "method": "GET",
+        "url": "https://jsonplaceholder.typicode.com/users/1",
+        "headers": {},
+        "body": null,
+        "expected_status_code": 200
+      },
+      {
+        "name": "Test POST Create User",
+        "method": "POST",
+        "url": "https://jsonplaceholder.typicode.com/posts",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "title": "foo",
+          "body": "bar",
+          "userId": 1
+        },
+        "expected_status_code": 201
+      }
+    ]
+  }
+  
