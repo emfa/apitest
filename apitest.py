@@ -95,14 +95,9 @@ def write_results_to_excel(results, output_file):
     wb.save(output_file)
     print(f"Test results saved to {output_file}")
 
-
-if __name__ == "__main__":
-    # Define the input file path for test cases and the output file path for results
-    input_file = "api_tests.json"  # Make sure this file exists
-    output_file = "api_test_results.xlsx"
-
+def run(input_file_name, output_file_name="api_test_results.xlsx"):
     # Load test cases from the input JSON file
-    test_cases = load_test_cases(input_file)
+    test_cases = load_test_cases(input_file_name)
 
     # Execute each test case and collect the results in parallel
     from concurrent.futures import ThreadPoolExecutor
@@ -111,4 +106,7 @@ if __name__ == "__main__":
         test_results = list(executor.map(execute_test_case, test_cases))
 
     # Write the collected test results to an Excel file
-    write_results_to_excel(test_results, output_file)
+    write_results_to_excel(test_results, output_file_name)
+
+if __name__ == "__main__":
+    pass
