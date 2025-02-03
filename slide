@@ -1,0 +1,409 @@
+---
+theme: seriph
+background: https://source.unsplash.com/collection/94734566/1920x1080
+class: text-center
+highlighter: shiki
+lineNumbers: false
+info: |
+  ## API Testing Framework
+  A comprehensive guide for both QA teams and developers
+drawings:
+  persist: false
+transition: slide-left
+title: API Testing Framework - Complete Guide
+---
+
+# API Testing Framework
+A Complete Solution for API Test Automation
+
+<div class="pt-12">
+  <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
+    Press Space for next page <carbon:arrow-right class="inline"/>
+  </span>
+</div>
+
+<div class="abs-br m-6 flex gap-2">
+  <a href="https://github.com/yourusername/api-testing-framework" target="_blank" alt="GitHub"
+    class="text-xl icon-btn opacity-50 !border-none !hover:text-white">
+    <carbon-logo-github />
+  </a>
+</div>
+
+---
+layout: default
+---
+
+# Framework Overview
+
+### For QA Teams:
+- 📝 Write tests in simple JSON format
+- 📊 Get detailed Excel reports
+- ⏱️ Monitor API performance
+- 🔄 Test multiple API endpoints
+- 💡 No coding required
+
+### For Developers:
+- 🚀 FastAPI-based architecture
+- 🔧 Extensible Python framework
+- 🔄 Concurrent test execution
+- 📈 Performance monitoring
+- 🛠️ Easy integration with CI/CD
+
+---
+layout: two-cols
+---
+
+# Architecture Overview
+
+::left::
+
+### High-Level Flow
+1. JSON test definitions
+2. FastAPI server
+3. Test execution engine
+4. Excel report generation
+
+### Key Components
+- REST API interface
+- Parallel test executor
+- Report formatter
+- Error handler
+
+::right::
+
+```mermaid
+graph TD
+    A[JSON Test Cases] --> B[FastAPI Server]
+    B --> C[Test Engine]
+    C --> D[Parallel Executor]
+    D --> E[API Endpoints]
+    E --> F[Result Collector]
+    F --> G[Excel Generator]
+    
+    style A fill:#94a3b8
+    style B fill:#60a5fa
+    style C fill:#60a5fa
+    style D fill:#60a5fa
+    style E fill:#94a3b8
+    style F fill:#60a5fa
+    style G fill:#94a3b8
+```
+
+---
+layout: default
+---
+
+# Project Structure
+
+```mermaid
+graph TD
+    A[Project Root] --> B[testfiles/]
+    A --> C[results/]
+    A --> D[app.py]
+    A --> E[apitest.py]
+    A --> F[requirements.txt]
+    
+    B --> G[api_tests.json]
+    C --> H[test_results.xlsx]
+    
+    style B fill:#94a3b8,stroke:#475569
+    style C fill:#94a3b8,stroke:#475569
+    style D fill:#60a5fa,stroke:#2563eb
+    style E fill:#60a5fa,stroke:#2563eb
+```
+
+### For QA Teams:
+- Put test files in `testfiles/`
+- Find reports in `results/`
+
+### For Developers:
+- `app.py`: FastAPI application
+- `apitest.py`: Core testing logic
+- `requirements.txt`: Dependencies
+
+---
+layout: default
+---
+
+# Creating Test Cases (QA Focus)
+
+Write test cases in JSON format:
+
+```json {all|2-3|4-5|6-7|8-12|all}
+{
+  "name": "Test GET User",
+  "description": "Verify user retrieval API",
+  "method": "GET",
+  "url": "https://api.example.com/users/1",
+  "headers": {},
+  "expected_status_code": 200,
+  "body": {
+    "userId": 1,
+    "title": "test title",
+    "body": "test body"
+  }
+}
+```
+
+Tips:
+- Use descriptive names
+- Include complete endpoints
+- Specify expected responses
+- Add relevant headers
+
+---
+layout: default
+---
+
+# Test Implementation (Developer Focus)
+
+Core test execution logic:
+
+```python {all|1-4|6-12|14-19|all}
+def execute_test_case(test_case):
+    """
+    Execute a single API test case with performance monitoring
+    """
+    # Extract test configuration
+    method = test_case['method']
+    url = test_case['url']
+    headers = test_case.get('headers', {})
+    body = test_case.get('body', None)
+    expected_status = test_case.get('expected_status_code', 200)
+
+    try:
+        # Performance monitoring
+        start_time = time.time()
+        response = requests.request(method, url, 
+                                 headers=headers, 
+                                 json=body, 
+                                 timeout=10)
+        response_time = round((time.time() - start_time) * 1000, 2)
+```
+
+---
+layout: default
+---
+
+# FastAPI Integration (Developer Focus)
+
+REST API endpoints implementation:
+
+```python {all|1-5|7-11|13-21|all}
+class TestRequest(BaseModel):
+    """Pydantic model for test request validation"""
+    input_file_name: str
+    output_file_name: str
+
+@app.get("/")
+def read_root():
+    """Health check endpoint"""
+    return {"Name": "API Test Automation", 
+            "Version": "1.0"}
+
+@app.post("/run-tests/")
+async def run_tests(request: TestRequest):
+    """Execute test suite and generate report"""
+    try:
+        apitest.run(
+            input_file_name=request.input_file_name,
+            output_file_name=request.output_file_name
+        )
+        return {"status": "success"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+```
+
+---
+layout: default
+---
+
+# Understanding Test Reports
+
+### For QA Teams:
+1. **Test Information**
+   - Test name and description
+   - API endpoint details
+   - Pass/Fail status
+
+2. **Response Details**
+   - Status codes
+   - Response times
+   - Error messages
+
+### For Developers:
+1. **Performance Metrics**
+   ```python
+   # Response time calculation
+   response_time = round((time.time() - start_time) * 1000, 2)
+   ```
+
+2. **Error Handling**
+   ```python
+   except requests.exceptions.RequestException as e:
+       result["Result"] = "Fail"
+       result["Error Message"] = str(e)
+   ```
+
+---
+layout: default
+---
+
+# HTTP Status Codes Guide
+
+| Code | Meaning | QA Usage | Developer Note |
+|------|---------|----------|----------------|
+| 200 | OK | Expected for successful GET | Default success response |
+| 201 | Created | Use for POST requests | New resource created |
+| 400 | Bad Request | Invalid input test cases | Client-side error |
+| 401 | Unauthorized | Auth failure tests | Missing/invalid token |
+| 404 | Not Found | Resource not found tests | Invalid resource ID |
+| 500 | Server Error | System error tests | Server-side failure |
+
+Tips:
+- QA: Include these in `expected_status_code`
+- Developers: Handle all status codes appropriately
+
+---
+layout: two-cols
+---
+
+# Running Tests
+
+::left::
+
+### For QA Teams:
+1. Prepare JSON file:
+```json
+{
+  "tests": [
+    {
+      "name": "Test GET User",
+      "method": "GET",
+      "url": "..."
+    }
+  ]
+}
+```
+
+2. Place in `testfiles/`
+3. Request test execution
+4. Check results in Excel
+
+::right::
+
+### For Developers:
+1. Start FastAPI server:
+```bash
+uvicorn app:app --reload
+```
+
+2. Execute via API:
+```bash
+curl -X POST "http://localhost:8000/run-tests/" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "input_file_name": "tests.json",
+       "output_file_name": "results.xlsx"
+     }'
+```
+
+---
+layout: default
+---
+
+# Best Practices
+
+### For QA Teams:
+1. **Test Organization**
+   - Group related tests
+   - Use clear naming conventions
+   - Include edge cases
+
+2. **Test Data Management**
+   - Maintain test data separately
+   - Version control test files
+   - Document test scenarios
+
+### For Developers:
+1. **Code Maintenance**
+   - Handle timeouts properly
+   - Implement retry logic
+   - Log detailed errors
+
+2. **Performance Optimization**
+   ```python
+   with ThreadPoolExecutor() as executor:
+       test_results = list(executor.map(
+           execute_test_case, test_cases
+       ))
+   ```
+
+---
+layout: default
+---
+
+# Troubleshooting Guide
+
+### For QA Teams:
+1. **Common Issues**
+   - Invalid JSON format
+   - Incorrect endpoints
+   - Missing headers
+
+2. **Solutions**
+   - Validate JSON structure
+   - Check endpoint URLs
+   - Verify header requirements
+
+### For Developers:
+1. **Debug Tools**
+   ```python
+   # Add detailed logging
+   logging.debug(f"Request: {method} {url}")
+   logging.debug(f"Headers: {headers}")
+   logging.debug(f"Body: {body}")
+   ```
+
+2. **Error Handling**
+   - Implement proper exception handling
+   - Add detailed error messages
+   - Monitor system resources
+
+---
+layout: center
+class: text-center
+---
+
+# Getting Started
+
+### For Everyone:
+1. Clone repository
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+### QA Teams:
+- Start with example test cases
+- Modify for your needs
+- Run tests via API
+
+### Developers:
+- Review architecture
+- Extend as needed
+- Integrate with your tools
+
+---
+layout: end
+class: text-center
+---
+
+# Thank You!
+
+Start Testing Your APIs Today!
+
+### Resources
+- Documentation: [docs.example.com](https://docs.example.com)
+- Support: [support@example.com](mailto:support@example.com)
+- GitHub: [github.com/yourusername/api-testing-framework](https://github.com)
