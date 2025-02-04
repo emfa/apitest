@@ -38,7 +38,6 @@ def execute_test_case(test_case):
             "Description": description,
             "HTTP Method": method,
             "Endpoint URL": url,
-            "Request Headers": json.dumps(headers, indent=2),
             "Request Body": json.dumps(body, indent=2) if body else "N/A",
             "Expected Status Code": expected_status,
             "Actual Status Code": response.status_code,
@@ -54,7 +53,6 @@ def execute_test_case(test_case):
             "Test Name": test_case['name'],
             "HTTP Method": method,
             "Endpoint URL": url,
-            "Request Headers": json.dumps(headers, indent=2),
             "Request Body": json.dumps(body, indent=2) if body else "N/A",
             "Expected Status Code": expected_status,
             "Actual Status Code": "N/A",
@@ -145,16 +143,16 @@ def write_results_to_excel(results, output_file):
     wb.save(output_file)
     print(f"Test results saved to {output_file}")
 
-def run(input_file_name, output_file_name="api_test_results.xlsx"):
+def runtest(input_file_name, output_file_name="api_test_results.xlsx", folder_name="dev"):
 
-    input_file_path = path.join(path.dirname(path.abspath(__file__)),'testfiles', input_file_name)
+    input_file_path = path.join(path.dirname(path.abspath(__file__)),'testfiles', folder_name, input_file_name)
 
     # Load test cases from the input JSON file
     test_cases = load_test_cases(input_file_path)
 
     output_file_path = path.join(path.dirname(path.abspath(__file__)),'results', output_file_name)
 
-    # Execute each test case and collect the results in parallel
+    # Execute each test case and collect the results in parallel using ThreadPoolExecutor
     from concurrent.futures import ThreadPoolExecutor
 
     with ThreadPoolExecutor() as executor:
